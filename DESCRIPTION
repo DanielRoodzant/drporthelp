@@ -1,16 +1,27 @@
 Package: drporthelp
-Title: What the Package Does (One Line, Title Case)
+Title: Help package for my online portfolio
 Version: 0.0.0.9000
 Authors@R: 
-    person(given = "First",
-           family = "Last",
-           role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+    person(given = "Daniël",
+           family = "Roodzant",
+           email = "daniel.roodzant@student.hu.nl",
+           role = c("aut", "cre"))
+Description: This package was created to display my skill in building a package and creating functions. It is used in my personal online portfolio to take on some of the duplicate code.
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
+Imports: 
+    dplyr,
+    eply,
+    forcats,
+    magrittr,
+    qpdf,
+    stringr,
+    tidyr,
+    utils
+Suggests: 
+    rmarkdown,
+    knitr
+VignetteBuilder: knitr
