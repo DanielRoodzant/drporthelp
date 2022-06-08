@@ -16,6 +16,7 @@ Imports:
     DBI,
     dslabs,
     dplyr,
+    drporthelp,
     eply,
     forcats,
     ggplot2,

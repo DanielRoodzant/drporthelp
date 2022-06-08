@@ -101,4 +101,5 @@ In the chapter it is used as follows:
 # Calculate the mean of the RawData
 mean_data_FLOW.062 <- scatter_FLOW.062 %>% mean_data()
 ```
+
 For the full results on the use of the functions, please see the corresponding chapters or the vignettes.
