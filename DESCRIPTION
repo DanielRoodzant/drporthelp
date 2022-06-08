@@ -1,19 +1,20 @@
 Package: drporthelp
 Title: Help package for my online portfolio
-Version: 0.0.0.9000
+Version: 0.0.1.0
 Authors@R: 
     person(given = "Daniël",
            family = "Roodzant",
-           email = "daniel.roodzant@student.hu.nl",
+           email = "daniel.rdznt@gmail.com",
            role = c("aut", "cre"))
-Description: This package was created to display my skill in building a package and creating functions. It is used in my personal online portfolio to take on some of the duplicate code.
+Description: This package was created to display my skill in building a package and creating functions. It is used in my personal online portfolio to take on some of the duplicate code. See https://github.com/DanielRoodzant/drporthelp.git.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Imports: 
     dplyr,
+    drporthelp,
     eply,
     forcats,
     magrittr,

@@ -1,0 +1,139 @@
+---
+title: "C. elegans Plate Experiment"
+author: "Daniël Roodzant"
+date: default
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{c_elegans_plate_exp}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup, include = FALSE}
+library(drporthelp)
+library(here)
+library(readxl) 
+library(tidyverse)
+```
+
+# C. elegans plate experiment 
+
+The data for this exercise was kindly supplied by J. Louter (INT/ILC) and was derived from an experiment in which adult C.elegans nematodes were exposed to varying concentrations of different compounds. The variables RawData (the outcome - number of offspring counted as an integer value, after incubation time), compName (the generic name of the compound/chemical), the compConcentration (the concentration of the compound), and the expType are the most important variables in this dataset.
+<br> <br>
+A typical analysis with this data would be to run a dose-response analysis using a log-logistic model with estimates for the maximal, the minimal, the IC50 concentration and the slope at IC50. We will not go into the details but a good package to run such computations and create graphs in R is the {drc} package. 
+<br> <br>
+Image 1 illustrates the excel file containing the data. 
+<br>
+![Untidy_example](../inst/c_elegans_plate_exp/Untidy_example.png){width=100%}
+<font size="2">
+Image 1: Raw data file containing data about the C. elegans plate experiment.
+</font>
+<br> <br>
+The file contains four sheets which have had lots of care put into the make-up and are somewhat difficult to read as they are now. 
+<br> <br>
+To have a look at the first five rows of the file the data is retrieved through the following R-code:
+```{r 1.1.b, message = FALSE, warning = FALSE}
+# Read the excel file into a vector and display it in a small table.
+scatter_FLOW.062 <- readxl::read_excel(here::here("inst/c_elegans_plate_exp/CE.LIQ.FLOW.062_Tidydata.xlsx")) 
+knitr::kable(scatter_FLOW.062 %>% head(5))
+```
+<br> 
+And the data types of the variables RawData, compName and compConcentration:
+```{r 1.1.c, message=FALSE, warning=FALSE}
+# Display the data type of select columns
+scatter_FLOW.062 %>% dplyr::select(RawData, compName, compConcentration) %>% utils::head(1)
+```
+It would be expected that the data types of the columns are dbl, chr and dbl. compConcentration however, has the datatype chr. This means the format was imported incorrectly making it difficult to analyse the data.
+<br> <br>
+The following code transforms the comConcentration column to dbl and plots the data in a scatterplot graph with the data for the different compounds on the y-axis (RawData) and the varying concentrations on the x-axis (compConcentration). Each variable has a colour matching the compName and a symbol matching the expType column-values.
+```{r 1.1.d, message = FALSE, warning = FALSE}
+# Transform the datatype of compConcentration to dbl
+scatter_FLOW.062 <- scatter_FLOW.062 %>% base::transform(compConcentration = base::as.double(compConcentration))
+
+# Plotting data using ggplot through a function in drporthelp
+scatter_FLOW.062 %>% drporthelp::plot_data()
+```
+<br>
+<font size="2">
+Figure 1: Scatterplot displaying the amount of offspring at different concentrations in nM per compound (colour) and experiment type (symbol).
+</font>
+<br> <br>
+Had the data type of the compConcentration column not been changed the following would have happened:
+```{r 1.1.e, message = FALSE, warning = FALSE}
+# Show example of the wrong graph from unedited .xlsx format by retrieving data
+wrong_scatter_FLOW.062 <- readxl::read_excel(here::here("inst/c_elegans_plate_exp/CE.LIQ.FLOW.062_Tidydata.xlsx"))
+
+# Plotting data using ggplot through a function in drporthelp
+wrong_scatter_FLOW.062 %>% drporthelp::plot_data()
+```
+<br>
+<font size="2">
+Figure 2: Scatterplot displaying the amount of offspring at different concentrations in nM per compound (colour) and experiment type (symbol) with the compConcentration column unchanged.
+</font>
+<br> <br>
+Every concentration is seen as a separate point because the compConcentration column has the 'chr' type.
+<br> <br>
+The 'correct' graph in figure 1 still has to be cleaned up more. This was done by using a log10 transformation on the x-axis to create a more clear graph and by adding jitter to prevent the points in the graph from overlapping:
+```{r 1.1.f, message = FALSE, warning = FALSE}
+# Plot data using log10 function in ggplot
+scatter_FLOW.062 %>% ggplot2::ggplot(aes(x = compConcentration, y = RawData)) + 
+  geom_point() + 
+  geom_jitter(aes(colour = compName, shape = expType), width = 0.5) +
+  scale_x_log10() +
+  labs(title = "Compound RawData per compound concentration",
+       caption = "Data supplied by J. Louter (INT/ILC)")  +
+  xlab("Concentration (nM)") +
+  ylab("Number of offspring (n)")
+```
+<br>
+<font size="2">
+Figure 3: Scatterplot displaying the amount of offspring at different concentrations in nM per compound (colour) and experiment type (symbol) transformed with log10 on the x-axis and added jitter.
+</font>
+<br> <br>
+The positive control for this experiments is ethanol. The negative control for this experiment is S-medium.
+<br> <br>
+Analyzing this experiment to learn whether there is indeed an effect of different concentrations of compounds on offspring count and whether the different compounds have a different curve (IC50) would take these steps:<br>
+(Not performed here) <br>
+- Group the data for every compound. <br>
+- Check if the data is normally distributed. <br>
+- Use the appropriate statistical tests on the data to see if there is a statistically significant effect of different concentrations on the offspring count. <br>
+- Calculate the IC50 and create a plot of the curve.
+<br> <br>
+In the next visualization the data has been normalized for the 'controlNegative' in such a way that the mean value for controlNegative is exactly equal to 1 and that all other values are expressed as a fraction thereof. 
+```{r 1.1.j, message = FALSE, warning = FALSE}
+# Calculate the mean of the RawData
+mean_data_FLOW.062 <- scatter_FLOW.062 %>% mean_data()
+
+# Normalise the RawData using the calculated mean
+normalized_FLOW.062 <- scatter_FLOW.062 %>% 
+  dplyr::select(expType, compName, compConcentration, RawData) %>%
+  dplyr::mutate(RawData_normalized = RawData / mean_data_FLOW.062$mean_RawData)
+
+# Calculate the mean of the normalised data
+mean_normalized_FLOW.062 <- normalized_FLOW.062 %>% 
+  dplyr::group_by(expType, compName, compConcentration) %>%
+  dplyr::summarise(mean_RawData_normalized = base::mean(RawData_normalized, na.rm = TRUE))
+knitr::kable(mean_normalized_FLOW.062 %>% head(5))
+
+# Plot the normalised mean using ggplot
+mean_normalized_FLOW.062 %>% ggplot2::ggplot(aes(x = compConcentration, y = mean_RawData_normalized)) + 
+  geom_point() + 
+  geom_jitter(aes(colour = compName, shape = expType), width = 0.5) +
+  labs(title = "Normalized mean compound RawData per compound concentration",
+       caption = "Data supplied by J. Louter (INT/ILC)") +
+  xlab("Concentration (nM)") +
+  ylab("Number of offspring (n)")
+```
+<br>
+<font size="2">
+Figure 4: Scatterplot displaying the amount of offspring at different concentrations in nM per compound (colour) and experiment type (symbol) normalized on the negative control.
+</font>
+<br> <br>
+This step was taken to get the result in relation to the '0 value' which makes it easier to compare the samples to the "normal" value. 
