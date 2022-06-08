@@ -3,4 +3,6 @@
 export("%>%")
 export(coltrans)
 export(datatrans)
+export(mean_data)
+export(plot_data)
 importFrom(magrittr,"%>%")

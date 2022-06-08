@@ -2,16 +2,16 @@
 % Please edit documentation in R/coltrans.R
 \name{coltrans}
 \alias{coltrans}
-\title{Transform columntypes}
+\title{Transform column types}
 \usage{
-coltrans(x)
+coltrans(file)
 }
 \arguments{
-\item{x}{= File you want to transform the columns of}
+\item{file}{The file you want to transform the columns of}
 }
 \value{
 Tibble with changed column types
 }
 \description{
-Transform the columntypes of the tidy flu_data and dengue_data in my online portfolio page: relational databases
+Transform the column types of the tidy flu_data and dengue_data in my online portfolio page, chapter: relational databases
 }

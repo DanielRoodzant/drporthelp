@@ -4,14 +4,14 @@
 \alias{datatrans}
 \title{Transform data}
 \usage{
-datatrans(x)
+datatrans(data)
 }
 \arguments{
-\item{x}{= file you want to transform the data of}
+\item{data}{The file you want to transform the data of}
 }
 \value{
 Tibble with altered data
 }
 \description{
-Transform data in flu_data and dengue_data to make them joinable
+Transform data in flu_data and dengue_data to make them joinable in my online portfolio page, chapter: relational databases
 }
